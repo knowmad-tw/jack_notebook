@@ -336,6 +336,8 @@ function renderCards() {
         </div>
       </div>
       <div class="card-actions">
+        <button class="btn btn-sm move-btn" data-id="${c.id}" data-dir="up" title="上移">▲</button>
+        <button class="btn btn-sm move-btn" data-id="${c.id}" data-dir="down" title="下移">▼</button>
         <button class="btn btn-sm edit-btn" data-id="${c.id}">編輯</button>
         <button class="btn btn-sm btn-danger del-btn" data-id="${c.id}">刪除</button>
       </div>
@@ -345,6 +347,7 @@ function renderCards() {
   // Bind events
   list.querySelectorAll('.edit-btn').forEach(b => b.addEventListener('click', () => openEditModal(b.dataset.id)));
   list.querySelectorAll('.del-btn').forEach(b => b.addEventListener('click', () => deleteCard(b.dataset.id)));
+  list.querySelectorAll('.move-btn').forEach(b => b.addEventListener('click', () => moveCard(b.dataset.id, b.dataset.dir)));
 
   // Drag reorder
   list.querySelectorAll('.card-item').forEach(el => {
@@ -369,6 +372,20 @@ function renderCards() {
       } catch (err) { toast('排序儲存失敗', true); }
     });
   });
+}
+
+// ===================== Move Card Up/Down =====================
+async function moveCard(id, dir) {
+  const idx = cards.findIndex(c => c.id === id);
+  if (dir === 'up' && idx <= 0) return;
+  if (dir === 'down' && idx >= cards.length - 1) return;
+  const swapIdx = dir === 'up' ? idx - 1 : idx + 1;
+  [cards[idx], cards[swapIdx]] = [cards[swapIdx], cards[idx]];
+  renderCards();
+  try {
+    await Promise.all(cards.map((c, i) => updateDoc(doc(db, 'cards', c.id), { sortOrder: i })));
+    toast('排序已更新');
+  } catch (e) { toast('排序儲存失敗', true); }
 }
 
 // ===================== Create / Edit Modal =====================
