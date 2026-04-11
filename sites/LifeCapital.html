@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人生資本 — Life Capital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b09;
+    --bg2: #131210;
+    --bg3: #1c1a16;
+    --text: #f0ead8;
+    --text-dim: #8a8070;
+    --text-muted: #504840;
+    --gold: #c8882a;
+    --gold-light: #e4aa50;
+    --gold-pale: #2a2010;
+    --line: #2a2620;
+    --line-bright: #3d3830;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display SC', serif;
+    font-size: clamp(56px, 10vw, 120px);
+    line-height: 0.95;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-family: 'Playfair Display SC', serif;
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-body {
+    max-width: 560px;
+    font-size: 18px;
+    color: var(--text-dim);
+    line-height: 1.9;
+    font-style: italic;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    right: 60px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+  }
+
+  .hero-scroll::before {
+    content: '';
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .hero-bg-number {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display SC', serif;
+    font-size: 35vw;
+    font-weight: 700;
+    color: var(--gold-pale);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    animation: fadeIn 1.5s 0.5s forwards;
+  }
+
+  /* ─── INTRO STRIP ─── */
+  .intro-strip {
+    padding: 60px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .intro-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    padding-top: 6px;
+  }
+
+  .intro-text {
+    font-size: 22px;
+    line-height: 1.8;
+    color: var(--text);
+    font-weight: 300;
+  }
+
+  .intro-text strong {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* ─── CAPITAL GRID NAV ─── */
+  .capital-nav {
+    padding: 60px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .capital-nav-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+
+  .capital-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--line);
+  }
+
+  .nav-chip {
+    background: var(--bg);
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .nav-chip:hover {
+    background: var(--gold-pale);
+  }
+
+  .nav-chip-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .nav-chip-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .nav-chip-name {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .nav-chip-en {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  /* ─── SECTION ─── */
+  .capital-section {
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+
+  .capital-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .capital-section:nth-child(even) {
+    background: var(--bg2);
+  }
+
+  .section-inner {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 360px;
+  }
+
+  .section-left {
+    padding: 60px 40px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .section-number {
+    font-family: 'Playfair Display SC', serif;
+    font-size: 80px;
+    font-weight: 700;
+    color: var(--line-bright);
+    line-height: 1;
+    position: absolute;
+    top: 40px;
+    right: 30px;
+  }
+
+  .section-icon {
+    font-size: 36px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .section-title-zh {
+    font-family: 'Playfair Display SC', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .section-title-en {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .section-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--gold-pale);
+    border: 1px solid var(--gold);
+    border-radius: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+
+  .section-right {
+    padding: 60px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 40px;
+  }
+
+  .section-desc {
+    font-size: 19px;
+    line-height: 1.9;
+    color: var(--text-dim);
+    font-weight: 300;
+    max-width: 560px;
+    border-left: 2px solid var(--gold);
+    padding-left: 24px;
+    font-style: italic;
+  }
+
+  .section-actions-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .action-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .action-item {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .action-bullet {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .action-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .action-text strong {
+    color: var(--gold-light);
+  }
+
+  /* ─── SYNERGY SECTION ─── */
+  .synergy-section {
+    padding: 80px 60px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+
+  .synergy-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .synergy-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+    align-items: end;
+  }
+
+  .synergy-title {
+    font-family: 'Playfair Display SC', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .synergy-title span { color: var(--gold); }
+
+  .synergy-body {
+    font-size: 18px;
+    line-height: 1.9;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+  }
+
+  .principle-card {
+    background: var(--bg);
+    padding: 40px;
+  }
+
+  .principle-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    margin-bottom: 20px;
+  }
+
+  .principle-title {
+    font-family: 'Playfair Display SC', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .principle-body {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* ─── RHYTHM SECTION ─── */
+  .rhythm-section {
+    padding: 80px 60px;
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+
+  .rhythm-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .rhythm-title {
+    font-family: 'Playfair Display SC', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .rhythm-title span { color: var(--gold); }
+
+  .rhythm-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 50px;
+  }
+
+  .rhythm-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+
+  .rhythm-col-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-bright);
+  }
+
+  .rhythm-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+    line-height: 1.6;
+    display: flex;
+    gap: 12px;
+  }
+
+  .rhythm-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-quote {
+    font-family: 'Playfair Display SC', serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  .footer-quote span {
+    color: var(--gold);
+  }
+
+  .footer-meta {
+    text-align: right;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display SC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+  }
+
+  /* ─── DIVIDER LINE ─── */
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+    margin: 0;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .hero { padding: 60px 30px; }
+    .intro-strip { grid-template-columns: 1fr; gap: 20px; padding: 40px 30px; }
+    .capital-nav { padding: 40px 30px; }
+    .capital-nav-grid { grid-template-columns: repeat(2, 1fr); }
+    .section-inner { grid-template-columns: 1fr; }
+    .section-left { border-right: none; border-bottom: 1px solid var(--line); padding: 40px 30px; }
+    .section-right { padding: 40px 30px; }
+    .synergy-header { grid-template-columns: 1fr; gap: 20px; }
+    .principle-grid { grid-template-columns: 1fr; }
+    .rhythm-grid { grid-template-columns: 1fr; }
+    .synergy-section, .rhythm-section { padding: 60px 30px; }
+    footer { grid-template-columns: 1fr; padding: 40px 30px; }
+    .footer-meta { text-align: left; }
+    .hero-scroll { display: none; }
+    .hero-bg-number { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-number">十</div>
+  <p class="hero-eyebrow">A Framework for Human Development</p>
+  <h1 class="hero-title">
+    人生資本
+    <span>Life Capital</span>
+  </h1>
+  <p class="hero-subtitle">成為更全方位的人 — A Complete Person</p>
+  <p class="hero-body">
+    財務只是資本的一種形式。<br>
+    真正厚實的人生，建立在十種難以被奪走的積累上。<br>
+    每一天的選擇，都是在某個帳戶裡存錢，或提款。
+  </p>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<!-- INTRO -->
+<div class="intro-strip">
+  <div class="intro-label">核心前提<br>Core Premise</div>
+  <div class="intro-text">
+    財務資本的邏輯是「<strong>保值增值</strong>」——但人生資本的邏輯更像是「<strong>使用才會增長</strong>」。
+    愈是認真地活著、給出去、承擔，反而愈富有。<br><br>
+    這十種資本彼此增強：身體好，學習快；關係深，機會多；意義清晰，就不會被焦慮淹沒。
+  </div>
+</div>
+
+<!-- NAV GRID -->
+<div class="capital-nav">
+  <div class="capital-nav-label">Ten Capitals — 十種資本</div>
+  <div class="capital-nav-grid">
+    <div class="nav-chip"><div class="nav-chip-num">01</div><span class="nav-chip-icon">💰</span><div class="nav-chip-name">財務資本</div><div class="nav-chip-en">Financial</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">02</div><span class="nav-chip-icon">🧠</span><div class="nav-chip-name">知識與技能</div><div class="nav-chip-en">Knowledge</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">03</div><span class="nav-chip-icon">💪</span><div class="nav-chip-name">身體與精力</div><div class="nav-chip-en">Physical</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">04</div><span class="nav-chip-icon">🤝</span><div class="nav-chip-name">社會與關係</div><div class="nav-chip-en">Social</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">05</div><span class="nav-chip-icon">🧘</span><div class="nav-chip-name">心理與情緒</div><div class="nav-chip-en">Psychological</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">06</div><span class="nav-chip-icon">⏰</span><div class="nav-chip-name">時間與注意力</div><div class="nav-chip-en">Time</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">07</div><span class="nav-chip-icon">🌱</span><div class="nav-chip-name">意義與價值觀</div><div class="nav-chip-en">Meaning</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">08</div><span class="nav-chip-icon">📖</span><div class="nav-chip-name">故事與經歷</div><div class="nav-chip-en">Experience</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">09</div><span class="nav-chip-icon">🎭</span><div class="nav-chip-name">文化資本</div><div class="nav-chip-en">Cultural</div></div>
+    <div class="nav-chip"><div class="nav-chip-num">10</div><span class="nav-chip-icon">🗳️</span><div class="nav-chip-name">公民資本</div><div class="nav-chip-en">Civic</div></div>
+  </div>
+</div>
+
+<div class="gold-line"></div>
+
+<!-- CAPITALS -->
+
+<section class="capital-section" id="c1">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">💰</span>
+        <div class="section-title-zh">財務資本</div>
+        <div class="section-title-en">Financial Capital</div>
+      </div>
+      <div class="section-number">01</div>
+      <span class="section-tag">基礎 Foundation</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        財務是入場券，不是終點。它買的是選擇的自由、時間的餘裕、以及為其他資本投資的能力。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>建立緊急備用金</strong> — 3–6個月生活費，放在可快速動用的帳戶。這是所有其他計畫的安全網。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>自動化儲蓄與投資</strong> — 每月薪資入帳即自動轉出一定比例，讓習慣先走在意志力之前。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>追蹤「時間換金錢」的比例</strong> — 計算自己真實的時薪，清楚知道每一筆消費花掉了幾小時的人生。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>每年更新財務地圖</strong> — 資產、負債、收入結構，每年重新盤點一次，保持清醒。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c2">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">🧠</span>
+        <div class="section-title-zh">知識與技能資本</div>
+        <div class="section-title-en">Knowledge & Skills Capital</div>
+      </div>
+      <div class="section-number">02</div>
+      <span class="section-tag">複利 Compound</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        不只是學歷，而是真正能用的能力。解決問題的能力、跨領域的視野、持續學習的習慣——這些會複利成長，也不會貶值。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>每天固定閱讀30分鐘</strong> — 不求數量，求深度。讀完一本書後，寫下三個改變你想法的觀念。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>維護一個「學習後院」</strong> — 筆記系統、卡片盒或數位花園，讓零散知識相互連結。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>每年深入學一項新技能</strong> — 足夠到可以實際使用，而不只是「了解過」。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>教學是最好的學習</strong> — 寫作、演講、教人，都是把知識真正刻進腦中的方式。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c3">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">💪</span>
+        <div class="section-title-zh">身體與精力資本</div>
+        <div class="section-title-en">Physical & Energy Capital</div>
+      </div>
+      <div class="section-number">03</div>
+      <span class="section-tag">底層 Infrastructure</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        健康是所有資本的底層基礎設施。沒有精力，財富、智慧、人脈都難以動用。睡眠、飲食、運動，是每天在存錢，也在提款。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>睡眠視為不可妥協的投資</strong> — 7–8小時、固定作息。睡眠品質是認知能力的直接乘數。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>找到一項你願意持續一輩子的運動</strong> — 不是你覺得「應該做」的，而是你會期待去做的。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>追蹤精力曲線，而不只是時間</strong> — 哪些事情讓你充電？哪些讓你耗盡？重新分配你的日程表。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>每年做一次健康檢查</strong> — 不要等到出問題才開始重視身體這個你唯一的硬體。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c4">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">🤝</span>
+        <div class="section-title-zh">社會與關係資本</div>
+        <div class="section-title-en">Social & Relational Capital</div>
+      </div>
+      <div class="section-number">04</div>
+      <span class="section-tag">網絡 Network</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        真正的關係資本，是別人在你不在場時如何談論你。你認識誰，以及誰願意為你出力——但更深的是：你是不是一個值得被信任、被記得的人。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>主動維護深度關係</strong> — 不要讓重要的友誼只靠「剛好遇到」來維繫。每季主動聯絡幾位核心的人。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>給予先於索取</strong> — 在需要任何事之前，先成為一個有用的人、有趣的人、真心關心他人的人。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>進入不同圈子的房間</strong> — 每年認識幾位來自完全不同領域、背景、世界觀的人。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>投資弱連結</strong> — 最多機會來自點頭之交的泛泛之交，而非親密朋友。保持廣度。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c5">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">🧘</span>
+        <div class="section-title-zh">心理與情緒資本</div>
+        <div class="section-title-en">Psychological Capital</div>
+      </div>
+      <div class="section-number">05</div>
+      <span class="section-tag">韌性 Resilience</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        這是決定你在逆境中「跑多快能恢復」的資本，也是很多高成就者缺口最大的地方。面對挫折的韌性、調節情緒的能力、清楚自己是誰。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>建立情緒詞彙</strong> — 能夠精確命名自己的情緒，是情緒調節的第一步。練習「我感到的是X，因為Y」。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>定期進行獨處練習</strong> — 每週給自己幾個小時不帶手機的獨處，認識自己真正的思緒。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>主動面對而非迴避困難</strong> — 記錄你迴避的事情，選一件小的，直接面對，積累「我可以處理這個」的自信。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>在需要時尋求專業協助</strong> — 看心理師不是軟弱的表現，是對自己最嚴肅的投資之一。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c6">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">⏰</span>
+        <div class="section-title-zh">時間與注意力資本</div>
+        <div class="section-title-en">Time & Attention Capital</div>
+      </div>
+      <div class="section-number">06</div>
+      <span class="section-tag">稀缺 Scarce</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        比錢更稀缺。把時間花在什麼上，幾十年後就變成了什麼樣的人。學會保護你的注意力，等於在守護人生最貴的資源。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>每週進行「時間審計」</strong> — 真實記錄一週你的時間去了哪裡，數字往往令人驚訝。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>保護深度工作時段</strong> — 每天設定1–3小時的無打擾工作區，這是產出最高品質成果的關鍵。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>為注意力制定規則，而非意志力</strong> — 手機放另一個房間、關通知、設定使用時段，結構勝過自律。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>練習說不</strong> — 每一個「好」都是對某個「不」的犧牲。清楚自己最高價值的用途，其他的才有辦法婉拒。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c7">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">🌱</span>
+        <div class="section-title-zh">意義與價值觀資本</div>
+        <div class="section-title-en">Meaning & Values Capital</div>
+      </div>
+      <div class="section-number">07</div>
+      <span class="section-tag">導航 Navigation</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        知道自己為什麼而活。這不是玄學，而是導航系統——當選擇困難時，清晰的價值觀會讓你少走很多彎路，也更不容易被外界定義。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>寫下你的個人使命宣言</strong> — 不超過三句話。說清楚你想成為什麼樣的人、為誰而活、留下什麼。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>定期進行「後悔最小化測試」</strong> — 面對重要決定時，問自己：80歲的我，會後悔沒做這件事嗎？</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>辨識你的核心價值觀</strong> — 列出5–7個對你而言不可妥協的價值，並檢視現在的生活是否與之一致。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>每年進行一次年度回顧</strong> — 什麼讓我感到充實？什麼讓我感到空洞？讓過去一年的經驗指引下一年的方向。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c8">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">📖</span>
+        <div class="section-title-zh">故事與經歷資本</div>
+        <div class="section-title-en">Story & Experience Capital</div>
+      </div>
+      <div class="section-number">08</div>
+      <span class="section-tag">深度 Depth</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        你真正活過的事，塑造了你的判斷力與深度。旅行、失敗、跨出舒適圈——這些「投資」沒有報表，但會體現在你怎麼看人、怎麼做決定。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>每年至少做一件讓你害怕的事</strong> — 不是魯莽，而是刻意走進你知道會讓你成長的不適區。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>記錄你的人生故事</strong> — 日記、照片、短文皆可。你的記憶比你以為的更容易消失。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>從失敗中刻意提煉教訓</strong> — 不只是「繼續向前」，而是坐下來，認真問：這次告訴了我什麼？</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>去你從未去過的地方</strong> — 不同的地理與文化環境，會打開你看不見的世界邊界。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c9">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">🎭</span>
+        <div class="section-title-zh">文化資本</div>
+        <div class="section-title-en">Cultural Capital</div>
+      </div>
+      <div class="section-number">09</div>
+      <span class="section-tag">Bourdieu</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        文化資本決定你進入哪些房間、被誰當成自己人、以及如何解讀這個世界。它安靜，但長期來看，影響力非常大。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>培養一項長期的美學興趣</strong> — 音樂、建築、文學、電影——深入而非廣泛，讓品味真正長在身上。</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>閱讀超出你領域的經典</strong> — 哲學、歷史、文學，給你一個更長的時間尺度去理解當下。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>練習語言表達的精準度</strong> — 說話和寫作的清晰度，是文化資本最外顯的形式。每週進行刻意的寫作練習。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>親身接觸原作，而非摘要</strong> — 去美術館、看現場演出、讀原著，而不只是看別人的詮釋。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capital-section" id="c10">
+  <div class="section-inner">
+    <div class="section-left">
+      <div>
+        <span class="section-icon">🗳️</span>
+        <div class="section-title-zh">公民資本</div>
+        <div class="section-title-en">Civic Capital</div>
+      </div>
+      <div class="section-number">10</div>
+      <span class="section-tag">公共 Public</span>
+    </div>
+    <div class="section-right">
+      <div class="section-desc">
+        能在個人與結構之間切換思考的人，對人性、權力、利益的理解會更立體。不是憤怒地消費政治內容，而是清醒地理解、選擇性地參與、持續地思考。
+      </div>
+      <div>
+        <div class="section-actions-title">Action Plan — 行動方案</div>
+        <ul class="action-list">
+          <li class="action-item"><div class="action-bullet">A</div><div class="action-text"><strong>建立媒體識讀習慣</strong> — 主動辨識訊息來源、利益關係、情緒操作。每則新聞都問：誰說的？為什麼說？</div></li>
+          <li class="action-item"><div class="action-bullet">B</div><div class="action-text"><strong>關注一個你真正在乎的地方議題</strong> — 從街道、社區、城市開始，具體的參與比抽象的憤怒更有力。</div></li>
+          <li class="action-item"><div class="action-bullet">C</div><div class="action-text"><strong>閱讀不同立場的觀點</strong> — 不是為了找到「對的那方」，而是理解複雜性，避免被同溫層馴化。</div></li>
+          <li class="action-item"><div class="action-bullet">D</div><div class="action-text"><strong>貢獻你的專業給公共議題</strong> — 每個人都有能力讓某個角落的公共空間更好一點。找到你的切入點。</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-line"></div>
+
+<!-- SYNERGY -->
+<section class="synergy-section">
+  <div class="synergy-header">
+    <h2 class="synergy-title">十種資本的<br><span>共鳴法則</span></h2>
+    <p class="synergy-body">這些資本不是獨立的帳戶，而是一個彼此滋養的系統。理解它們如何相互作用，才能讓每一份投入產生最大的漣漪效應。</p>
+  </div>
+  <div class="principle-grid">
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 01</div>
+      <div class="principle-title">底層決定上層</div>
+      <div class="principle-body">身體（03）是所有資本的基礎設施。精力不足時，學習效率（02）、情緒穩定（05）、人際品質（04）都會崩塌。先守住身體，再談其他。</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 02</div>
+      <div class="principle-title">使用才會增長</div>
+      <div class="principle-body">人生資本與財務資本最大的不同：它不是靠保存來增值，而是靠付出。關係（04）在給予中加深；意義（07）在行動中清晰；經歷（08）在冒險中積累。</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">PRINCIPLE 03</div>
+      <div class="principle-title">意義是導航系統</div>
+      <div class="principle-body">當意義（07）清晰時，時間（06）的分配自然聚焦；財務（01）的目標也不再迷失。沒有價值觀的努力，只是加速跑向錯誤的終點。</div>
+    </div>
+  </div>
+</section>
+
+<!-- RHYTHM -->
+<section class="rhythm-section">
+  <h2 class="rhythm-title">建立你的<span>積累節奏</span></h2>
+  <div class="rhythm-sub">Daily · Weekly · Yearly Cadence — 每日 · 每週 · 每年</div>
+  <div class="rhythm-grid">
+    <div>
+      <div class="rhythm-col-title">每日 Daily</div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>固定睡眠時間，守住精力底線</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>閱讀30分鐘，讓知識持續複利</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>保護1–3小時的深度工作時段</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>記錄一件今天學到或感受到的事</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>主動表達關心給一個重要的人</div></div>
+    </div>
+    <div>
+      <div class="rhythm-col-title">每週 Weekly</div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>時間審計：這週時間去了哪裡？</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>至少一次深度的一對一對話</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>接觸一件非工作領域的文化事物</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>不帶手機的獨處時光（2小時以上）</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>關注一則公共議題，認真思考</div></div>
+    </div>
+    <div>
+      <div class="rhythm-col-title">每年 Yearly</div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>年度財務盤點：資產、負債、結構</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>年度回顧：充實 vs 空洞的時刻</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>做一件讓你真正害怕的事</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>去一個從未去過的地方</div></div>
+      <div class="rhythm-item"><div class="rhythm-dot"></div><div>更新個人使命宣言</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<!-- ─── TRACKER SECTION ─── -->
+<section class="tracker-section" id="tracker">
+  <div class="tracker-header">
+    <div>
+      <div class="tracker-eyebrow">Monthly Self-Assessment — 月度自評</div>
+      <h2 class="tracker-title">我的<span>資本雷達</span></h2>
+      <p class="tracker-desc">每個月花五分鐘，為十種資本評分（1–5）。視覺化的變化本身就是動力。資料存在你的瀏覽器，不上傳、不需帳號。</p>
+    </div>
+    <div class="tracker-month-nav">
+      <div class="month-display" id="monthDisplay"></div>
+      <div class="month-btns">
+        <button class="month-btn" id="prevMonth">← 上個月</button>
+        <button class="month-btn active" id="currentMonthBtn">回到本月</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tracker-body">
+    <div class="tracker-sliders">
+      <div class="slider-intro" id="sliderIntro"></div>
+      <div id="sliderList"></div>
+      <button class="save-btn" id="saveBtn">儲存評分</button>
+      <div class="save-msg" id="saveMsg"></div>
+    </div>
+    <div class="tracker-radar">
+      <canvas id="radarCanvas" width="400" height="400"></canvas>
+      <div class="radar-legend">
+        <div class="legend-item"><span class="legend-dot current"></span>本月</div>
+        <div class="legend-item"><span class="legend-dot previous"></span>上月</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="history-wrap">
+    <div class="history-title">歷史紀錄 <span>History</span></div>
+    <div class="history-grid" id="historyGrid"></div>
+    <div class="history-empty" id="historyEmpty"></div>
+  </div>
+</section>
+
+<!-- FLOATING BUTTON -->
+<button class="fab" onclick="document.getElementById('tracker').scrollIntoView({behavior:'smooth'})">
+  <span>📊</span>月度追蹤
+</button>
+
+<footer>
+  <div class="footer-quote">
+    「把時間花在什麼上，<br>幾十年後<span>就變成了什麼樣的人</span>。」
+  </div>
+  <div class="footer-meta">
+    <div class="footer-logo">Life Capital</div>
+    <div class="footer-copy">人生資本框架 — A Framework for Becoming</div>
+  </div>
+</footer>
+
+<style>
+/* ─── TRACKER ─── */
+.tracker-section {
+  padding: 80px 60px;
+  background: var(--bg2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.tracker-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 60px;
+}
+
+.tracker-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.tracker-title {
+  font-family: 'Playfair Display SC', serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.tracker-title span { color: var(--gold); }
+
+.tracker-desc {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.8;
+  max-width: 480px;
+}
+
+.tracker-month-nav {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.month-display {
+  font-family: 'Playfair Display SC', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.month-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.month-btn {
+  background: transparent;
+  border: 1px solid var(--line-bright);
+  color: var(--text-dim);
+  padding: 8px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.month-btn:hover, .month-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-pale);
+}
+
+/* BODY */
+.tracker-body {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 60px;
+  align-items: start;
+  margin-bottom: 60px;
+}
+
+/* SLIDERS */
+.slider-intro {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.slider-row {
+  display: grid;
+  grid-template-columns: 28px 130px 1fr 28px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.slider-icon { font-size: 18px; text-align: center; }
+
+.slider-label {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.slider-label-en {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: var(--line-bright);
+  outline: none;
+  cursor: pointer;
+  border-radius: 0;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--gold);
+  border-radius: 0;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+.slider-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: var(--gold);
+  text-align: center;
+  font-weight: 700;
+}
+
+.save-btn {
+  margin-top: 28px;
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.save-btn:hover {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.save-msg {
+  margin-top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--gold-light);
+  letter-spacing: 0.1em;
+  text-align: center;
+  min-height: 20px;
+}
+
+/* RADAR */
+.tracker-radar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  position: sticky;
+  top: 30px;
+}
+
+#radarCanvas {
+  max-width: 100%;
+}
+
+.radar-legend {
+  display: flex;
+  gap: 24px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.legend-dot.current { background: var(--gold); }
+.legend-dot.previous { background: #4a6080; }
+
+/* HISTORY */
+.history-wrap {
+  border-top: 1px solid var(--line);
+  padding-top: 40px;
+}
+
+.history-title {
+  font-family: 'Playfair Display SC', serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+.history-title span {
+  font-size: 12px;
+  font-family: 'Space Mono', monospace;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  margin-left: 10px;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.history-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.history-card:hover { border-color: var(--gold); }
+
+.history-card-month {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+
+.history-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.history-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-bar-icon { font-size: 11px; width: 16px; flex-shrink: 0; }
+
+.history-bar-track {
+  flex: 1;
+  height: 3px;
+  background: var(--line);
+  position: relative;
+}
+
+.history-bar-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: var(--gold);
+  opacity: 0.7;
+}
+
+.history-avg {
+  margin-top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.history-avg strong {
+  color: var(--gold-light);
+  font-size: 16px;
+}
+
+.history-empty {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  padding: 20px 0;
+}
+
+/* FLOATING BUTTON */
+.fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  padding: 14px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 24px rgba(200,136,42,0.3);
+  z-index: 500;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(200,136,42,0.4);
+}
+
+@media (max-width: 900px) {
+  .tracker-section { padding: 60px 30px; }
+  .tracker-header { grid-template-columns: 1fr; }
+  .tracker-month-nav { align-items: flex-start; }
+  .tracker-body { grid-template-columns: 1fr; }
+  .tracker-radar { position: static; }
+  .slider-row { grid-template-columns: 24px 100px 1fr 24px; }
+}
+</style>
+
+<script>
+// ─── DATA ───
+const CAPITALS = [
+  { id:'c1', icon:'💰', zh:'財務資本',   en:'Financial'     },
+  { id:'c2', icon:'🧠', zh:'知識與技能', en:'Knowledge'     },
+  { id:'c3', icon:'💪', zh:'身體與精力', en:'Physical'      },
+  { id:'c4', icon:'🤝', zh:'社會與關係', en:'Social'        },
+  { id:'c5', icon:'🧘', zh:'心理與情緒', en:'Psychological' },
+  { id:'c6', icon:'⏰', zh:'時間與注意力',en:'Time'         },
+  { id:'c7', icon:'🌱', zh:'意義與價值觀',en:'Meaning'      },
+  { id:'c8', icon:'📖', zh:'故事與經歷', en:'Experience'    },
+  { id:'c9', icon:'🎭', zh:'文化資本',   en:'Cultural'      },
+  { id:'c10',icon:'🗳️', zh:'公民資本',   en:'Civic'         },
+];
+
+const STORAGE_KEY = 'life_capital_scores';
+
+function getAll() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveAll(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function monthKey(y, m) { return `${y}-${String(m+1).padStart(2,'0')}`; }
+function monthLabel(key) {
+  const [y,m] = key.split('-');
+  const d = new Date(+y, +m-1, 1);
+  return d.toLocaleDateString('zh-TW', { year:'numeric', month:'long' });
+}
+
+// ─── STATE ───
+const now = new Date();
+let viewYear = now.getFullYear();
+let viewMonth = now.getMonth();
+
+// ─── RENDER SLIDERS ───
+function renderSliders() {
+  const key = monthKey(viewYear, viewMonth);
+  const all = getAll();
+  const scores = all[key] || {};
+  const isCurrent = (viewYear === now.getFullYear() && viewMonth === now.getMonth());
+
+  document.getElementById('monthDisplay').textContent = monthLabel(key);
+  document.getElementById('sliderIntro').textContent =
+    isCurrent ? '為本月的每種資本評分 (1–5)' : `查看 ${monthLabel(key)} 的評分`;
+
+  const list = document.getElementById('sliderList');
+  list.innerHTML = '';
+
+  CAPITALS.forEach(cap => {
+    const val = scores[cap.id] || 3;
+    const row = document.createElement('div');
+    row.className = 'slider-row';
+    row.innerHTML = `
+      <div class="slider-icon">${cap.icon}</div>
+      <div class="slider-label">${cap.zh}<br><span class="slider-label-en">${cap.en}</span></div>
+      <input type="range" min="1" max="5" step="1" value="${val}" data-id="${cap.id}" ${!isCurrent?'disabled':''}>
+      <div class="slider-val" id="val-${cap.id}">${val}</div>
+    `;
+    list.appendChild(row);
+    row.querySelector('input').addEventListener('input', e => {
+      document.getElementById('val-'+cap.id).textContent = e.target.value;
+      drawRadar();
+    });
+  });
+
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.style.display = isCurrent ? 'block' : 'none';
+
+  document.getElementById('currentMonthBtn').classList.toggle('active', isCurrent);
+  drawRadar();
+}
+
+// ─── GET CURRENT SLIDER VALUES ───
+function getSliderValues() {
+  const vals = {};
+  CAPITALS.forEach(cap => {
+    const el = document.querySelector(`input[data-id="${cap.id}"]`);
+    vals[cap.id] = el ? +el.value : 3;
+  });
+  return vals;
+}
+
+// ─── DRAW RADAR ───
+function drawRadar() {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const cx = W/2, cy = H/2;
+  const R = Math.min(W,H)/2 - 50;
+  const n = CAPITALS.length;
+  const angle = (i) => (Math.PI * 2 * i / n) - Math.PI/2;
+
+  // All scores
+  const current = getSliderValues();
+  const all = getAll();
+  const prevKey = monthKey(viewMonth === 0 ? viewYear-1 : viewYear, viewMonth === 0 ? 11 : viewMonth-1);
+  const prev = all[prevKey] || null;
+
+  // Grid rings
+  for (let r = 1; r <= 5; r++) {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const x = cx + R*(r/5)*Math.cos(angle(i));
+      const y = cy + R*(r/5)*Math.sin(angle(i));
+      i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = r === 5 ? '#3d3830' : '#2a2620';
+    ctx.lineWidth = r === 5 ? 1.5 : 1;
+    ctx.stroke();
+    // ring label
+    ctx.fillStyle = '#504840';
+    ctx.font = '10px Space Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(r, cx, cy - R*(r/5) + 4);
+  }
+
+  // Spokes
+  for (let i = 0; i < n; i++) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R*Math.cos(angle(i)), cy + R*Math.sin(angle(i)));
+    ctx.strokeStyle = '#2a2620';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Previous month polygon
+  if (prev) {
+    ctx.beginPath();
+    CAPITALS.forEach((cap, i) => {
+      const v = (prev[cap.id] || 1) / 5;
+      const x = cx + R*v*Math.cos(angle(i));
+      const y = cy + R*v*Math.sin(angle(i));
+      i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(74,96,128,0.25)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(74,96,128,0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  // Current polygon
+  ctx.beginPath();
+  CAPITALS.forEach((cap, i) => {
+    const v = (current[cap.id] || 1) / 5;
+    const x = cx + R*v*Math.cos(angle(i));
+    const y = cy + R*v*Math.sin(angle(i));
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(200,136,42,0.18)';
+  ctx.fill();
+  ctx.strokeStyle = '#c8882a';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Dots
+  CAPITALS.forEach((cap, i) => {
+    const v = (current[cap.id] || 1) / 5;
+    const x = cx + R*v*Math.cos(angle(i));
+    const y = cy + R*v*Math.sin(angle(i));
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI*2);
+    ctx.fillStyle = '#c8882a';
+    ctx.fill();
+  });
+
+  // Labels
+  CAPITALS.forEach((cap, i) => {
+    const labelR = R + 34;
+    const x = cx + labelR*Math.cos(angle(i));
+    const y = cy + labelR*Math.sin(angle(i));
+    ctx.fillStyle = '#f0ead8';
+    ctx.font = `13px 'Crimson Pro', serif`;
+    ctx.textAlign = Math.cos(angle(i)) > 0.1 ? 'left' : Math.cos(angle(i)) < -0.1 ? 'right' : 'center';
+    ctx.fillText(cap.icon + ' ' + cap.zh.slice(0,4), x, y + 4);
+  });
+}
+
+// ─── SAVE ───
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const key = monthKey(viewYear, viewMonth);
+  const all = getAll();
+  all[key] = getSliderValues();
+  saveAll(all);
+  const msg = document.getElementById('saveMsg');
+  msg.textContent = '✓ 已儲存';
+  setTimeout(() => msg.textContent = '', 2500);
+  renderHistory();
+});
+
+// ─── MONTH NAV ───
+document.getElementById('prevMonth').addEventListener('click', () => {
+  if (viewMonth === 0) { viewMonth = 11; viewYear--; }
+  else viewMonth--;
+  renderSliders();
+});
+document.getElementById('currentMonthBtn').addEventListener('click', () => {
+  viewYear = now.getFullYear();
+  viewMonth = now.getMonth();
+  renderSliders();
+});
+
+// ─── HISTORY ───
+function renderHistory() {
+  const all = getAll();
+  const keys = Object.keys(all).sort().reverse();
+  const grid = document.getElementById('historyGrid');
+  const empty = document.getElementById('historyEmpty');
+  grid.innerHTML = '';
+
+  if (keys.length === 0) {
+    empty.textContent = '尚無歷史紀錄。完成第一次評分後會顯示在這裡。';
+    return;
+  }
+  empty.textContent = '';
+
+  keys.forEach(key => {
+    const scores = all[key];
+    const avg = (Object.values(scores).reduce((a,b)=>a+b,0)/CAPITALS.length).toFixed(1);
+    const card = document.createElement('div');
+    card.className = 'history-card';
+    card.innerHTML = `
+      <div class="history-card-month">${monthLabel(key)}</div>
+      <div class="history-bars">
+        ${CAPITALS.map(cap => `
+          <div class="history-bar-row">
+            <span class="history-bar-icon">${cap.icon}</span>
+            <div class="history-bar-track">
+              <div class="history-bar-fill" style="width:${((scores[cap.id]||1)/5*100)}%"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="history-avg">平均 <strong>${avg}</strong> / 5</div>
+    `;
+    card.addEventListener('click', () => {
+      const [y,m] = key.split('-');
+      viewYear = +y; viewMonth = +m-1;
+      renderSliders();
+      document.getElementById('tracker').scrollIntoView({behavior:'smooth'});
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.capital-section, .synergy-section, .rhythm-section').forEach(el => {
+  observer.observe(el);
+});
+
+// ─── INIT ───
+renderSliders();
+renderHistory();
+</script>
+</body>
+</html>
