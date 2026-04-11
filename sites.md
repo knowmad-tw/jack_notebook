@@ -4,17 +4,17 @@
 使用說明：
 每個網站用 ## 開頭，格式如下：
 ## 網站標題
-- url: 檔名（放在 _sites/ 資料夾，如 LoveTaxonomy.html）
-- image: 圖片檔名（放在 _images/ 資料夾，如 LoveTaxonomy.jpg 或 .png）
+- url: 檔名（放在 sites/ 資料夾，如 LoveTaxonomy.html）
+- image: 圖片檔名（放在 images/ 資料夾，如 LoveTaxonomy.jpg 或 .png）
 - tag: 分類標籤
 - desc: 一句話描述
 
 結構：
 ├── index.html
 ├── sites.md
-├── _sites/
+├── sites/
 │   └── LoveTaxonomy.html
-└── _images/
+└── images/
     └── LoveTaxonomy.jpg
 -->
 

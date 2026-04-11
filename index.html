@@ -336,13 +336,13 @@ function renderCards(sites) {
   sites.forEach((site, i) => {
     const card = document.createElement('a');
     card.className = 'card';
-    card.href = '_sites/' + site.url;
+    card.href = 'sites/' + site.url;
     card.dataset.tag = site.tag;
     card.dataset.title = site.title;
     card.dataset.desc = site.desc;
 
     const imgHtml = site.image
-      ? `<img src="_images/${site.image}" alt="${site.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=placeholder>✦</div>'">`
+      ? `<img src="images/${site.image}" alt="${site.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=placeholder>✦</div>'">`
       : `<div class="placeholder">✦</div>`;
 
     card.innerHTML = `
