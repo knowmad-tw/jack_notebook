@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# Old files (can be deleted)
+main.py
+Dockerfile
+requirements.txt
+zeabur.json
+.dockerignore
+.env.example
+static/

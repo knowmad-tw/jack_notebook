@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>知識剪貼簿 — 管理後台</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -200,12 +201,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     </div>
 
     <div class="form-group html-section">
-      <label>HTML 內容頁</label>
+      <label>內容頁設定</label>
       <div class="html-tabs">
-        <button class="html-tab active" data-tab="editor">程式碼編輯</button>
+        <button class="html-tab active" data-tab="link">外部連結</button>
+        <button class="html-tab" data-tab="editor">程式碼編輯</button>
         <button class="html-tab" data-tab="upload">上傳檔案</button>
       </div>
-      <div id="htmlEditorPane">
+      <div id="htmlLinkPane">
+        <div style="padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:0 8px 8px 8px">
+          <input type="url" id="f_externalUrl" placeholder="https://example.com" style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;font-family:var(--font)">
+          <p style="font-size:12px;color:var(--text-dim);margin-top:8px">填入外部網址，點擊卡片將直接跳轉到該連結（會優先於 HTML 內容）</p>
+        </div>
+      </div>
+      <div id="htmlEditorPane" style="display:none">
         <textarea class="html-editor" id="f_html" placeholder="在此貼上或編輯 HTML 內容..."></textarea>
       </div>
       <div id="htmlUploadPane" style="display:none">
@@ -323,6 +331,7 @@ function renderCards() {
         <div class="meta">
           <span class="tag-badge">${esc(c.tag || '')}</span>
           ${!c.isVisible ? '<span class="hidden-badge">已隱藏</span>' : ''}
+          ${c.externalUrl ? '<span class="tag-badge" style="border-color:rgba(71,232,197,.3);color:var(--accent2)">外部連結</span>' : ''}
           <span>${esc(c.desc || '')}</span>
         </div>
       </div>
@@ -376,8 +385,15 @@ function openCreateModal() {
   document.getElementById('f_desc').value = '';
   document.getElementById('f_visible').checked = true;
   document.getElementById('f_html').value = '';
+  document.getElementById('f_externalUrl').value = '';
   document.getElementById('htmlFileName').textContent = '';
   resetImagePreview();
+  // Reset tabs to default (外部連結)
+  document.querySelectorAll('.html-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.html-tab[data-tab="link"]').classList.add('active');
+  document.getElementById('htmlLinkPane').style.display = 'block';
+  document.getElementById('htmlEditorPane').style.display = 'none';
+  document.getElementById('htmlUploadPane').style.display = 'none';
   document.getElementById('modal').classList.add('open');
 }
 
@@ -405,6 +421,9 @@ async function openEditModal(id) {
     resetImagePreview();
   }
 
+  // External URL
+  document.getElementById('f_externalUrl').value = card.externalUrl || '';
+
   // HTML content
   document.getElementById('f_html').value = '';
   document.getElementById('htmlFileName').textContent = card.htmlPath || '';
@@ -413,6 +432,20 @@ async function openEditModal(id) {
       const res = await fetch(card.htmlUrl);
       if (res.ok) document.getElementById('f_html').value = await res.text();
     } catch (e) { console.warn('無法載入 HTML 內容'); }
+  }
+
+  // Set active tab based on content
+  document.querySelectorAll('.html-tab').forEach(t => t.classList.remove('active'));
+  if (card.externalUrl) {
+    document.querySelector('.html-tab[data-tab="link"]').classList.add('active');
+    document.getElementById('htmlLinkPane').style.display = 'block';
+    document.getElementById('htmlEditorPane').style.display = 'none';
+    document.getElementById('htmlUploadPane').style.display = 'none';
+  } else {
+    document.querySelector('.html-tab[data-tab="editor"]').classList.add('active');
+    document.getElementById('htmlLinkPane').style.display = 'none';
+    document.getElementById('htmlEditorPane').style.display = 'block';
+    document.getElementById('htmlUploadPane').style.display = 'none';
   }
 
   document.getElementById('modal').classList.add('open');
@@ -440,11 +473,13 @@ async function saveCard() {
   btn.textContent = '儲存中...';
 
   try {
+    const externalUrl = document.getElementById('f_externalUrl').value.trim();
     const data = {
       title,
       tag: document.getElementById('f_tag').value.trim(),
       desc: document.getElementById('f_desc').value.trim(),
       isVisible: document.getElementById('f_visible').checked,
+      externalUrl,
       updatedAt: serverTimestamp(),
     };
 
@@ -587,6 +622,7 @@ document.querySelectorAll('.html-tab').forEach(tab => {
     document.querySelectorAll('.html-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     const mode = tab.dataset.tab;
+    document.getElementById('htmlLinkPane').style.display = mode === 'link' ? 'block' : 'none';
     document.getElementById('htmlEditorPane').style.display = mode === 'editor' ? 'block' : 'none';
     document.getElementById('htmlUploadPane').style.display = mode === 'upload' ? 'block' : 'none';
   });
