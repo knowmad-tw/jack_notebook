@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>彭其捷 ✦ 知識剪貼簿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;
+  --surface:#12121a;
+  --card:#1a1a26;
+  --card-hover:#22223a;
+  --accent:#e8c547;
+  --accent2:#47e8c5;
+  --text:#e8e6e0;
+  --text-dim:#8a8a9a;
+  --radius:16px;
+  --font-body:'Noto Sans TC',sans-serif;
+  --font-mono:'Space Mono',monospace;
+  --font-display:'Playfair Display',serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* === NOISE OVERLAY === */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.4;
+}
+
+/* === AMBIENT GLOW === */
+.glow{
+  position:fixed;width:600px;height:600px;border-radius:50%;
+  filter:blur(120px);opacity:.08;pointer-events:none;z-index:0;
+}
+.glow-1{background:var(--accent);top:-200px;left:-100px;animation:drift1 20s ease-in-out infinite}
+.glow-2{background:var(--accent2);bottom:-200px;right:-100px;animation:drift2 25s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-80px)}}
+
+/* === HEADER === */
+header{
+  position:relative;z-index:1;
+  padding:80px 40px 40px;
+  text-align:center;
+}
+.header-label{
+  font-family:var(--font-mono);
+  font-size:11px;letter-spacing:6px;text-transform:uppercase;
+  color:var(--accent);
+  opacity:0;animation:fadeUp .8s .2s forwards;
+}
+h1{
+  font-family:var(--font-display);
+  font-size:clamp(2.4rem,6vw,4.5rem);
+  font-weight:900;
+  margin:16px 0 8px;
+  background:linear-gradient(135deg,var(--text) 40%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:0;animation:fadeUp .8s .4s forwards;
+}
+.subtitle{
+  font-size:15px;color:var(--text-dim);font-weight:300;letter-spacing:1px;
+  opacity:0;animation:fadeUp .8s .6s forwards;
+}
+.divider{
+  width:60px;height:2px;margin:32px auto 0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  opacity:0;animation:fadeUp .8s .8s forwards;
+}
+
+/* === FILTER BAR === */
+.filter-bar{
+  position:relative;z-index:1;
+  display:flex;justify-content:center;gap:8px;
+  padding:24px 40px 8px;flex-wrap:wrap;
+  opacity:0;animation:fadeUp .8s 1s forwards;
+}
+.filter-btn{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:2px;
+  padding:8px 20px;border-radius:100px;
+  border:1px solid #2a2a3a;background:transparent;color:var(--text-dim);
+  cursor:pointer;transition:all .3s;text-transform:uppercase;
+}
+.filter-btn:hover,.filter-btn.active{
+  border-color:var(--accent);color:var(--accent);
+  background:rgba(232,197,71,.06);
+}
+
+/* === COUNTER === */
+.counter{
+  text-align:center;padding:16px 0 8px;
+  font-family:var(--font-mono);font-size:12px;color:var(--text-dim);
+  letter-spacing:2px;
+  opacity:0;animation:fadeUp .8s 1.1s forwards;
+}
+
+/* === GRID === */
+.grid{
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:24px;
+  padding:24px 40px 80px;
+  max-width:1400px;margin:0 auto;
+}
+
+/* === CARD === */
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.04);
+  cursor:pointer;
+  transition:all .4s cubic-bezier(.23,1,.32,1);
+  opacity:0;transform:translateY(30px);
+  text-decoration:none;color:inherit;
+  display:block;
+}
+.card.visible{opacity:1;transform:translateY(0)}
+.card:hover{
+  transform:translateY(-6px) scale(1.01);
+  border-color:rgba(232,197,71,.15);
+  box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px rgba(232,197,71,.04);
+  background:var(--card-hover);
+}
+.card-img-wrap{
+  position:relative;aspect-ratio:16/9;overflow:hidden;
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+}
+.card-img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .6s cubic-bezier(.23,1,.32,1),filter .4s;
+  filter:brightness(.85) saturate(.9);
+}
+.card:hover .card-img-wrap img{
+  transform:scale(1.06);
+  filter:brightness(1) saturate(1);
+}
+/* placeholder when no image */
+.card-img-wrap .placeholder{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:48px;
+  color:rgba(255,255,255,.06);
+  background:linear-gradient(135deg,#14142a 0%,#1c1c34 100%);
+}
+.card-img-wrap .placeholder::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,.015) 20px,rgba(255,255,255,.015) 21px);
+}
+
+/* overlay gradient */
+.card-img-wrap::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:60%;
+  background:linear-gradient(transparent,var(--card));
+  pointer-events:none;
+}
+
+.card-body{padding:20px 24px 24px}
+.card-tag{
+  display:inline-block;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--accent);
+  padding:4px 10px;
+  border:1px solid rgba(232,197,71,.2);
+  border-radius:100px;
+  margin-bottom:12px;
+}
+.card-title{
+  font-size:20px;font-weight:700;
+  line-height:1.3;margin-bottom:8px;
+  transition:color .3s;
+}
+.card:hover .card-title{color:var(--accent)}
+.card-desc{
+  font-size:13px;color:var(--text-dim);line-height:1.6;font-weight:300;
+}
+.card-arrow{
+  display:flex;align-items:center;gap:6px;
+  margin-top:16px;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:2px;
+  color:var(--text-dim);
+  transition:all .3s;
+}
+.card:hover .card-arrow{color:var(--accent);transform:translateX(4px)}
+.card-arrow svg{transition:transform .3s}
+.card:hover .card-arrow svg{transform:translateX(4px)}
+
+/* === FOOTER === */
+footer{
+  text-align:center;padding:40px;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:3px;
+  color:var(--text-dim);
+  border-top:1px solid rgba(255,255,255,.04);
+  opacity:0;animation:fadeUp .8s 1.2s forwards;
+}
+footer a{color:var(--accent);text-decoration:none}
+
+/* === LOADING === */
+.loading{
+  text-align:center;padding:120px 40px;
+  font-family:var(--font-mono);font-size:13px;color:var(--text-dim);
+  letter-spacing:3px;
+}
+.loading-dot{display:inline-block;animation:blink 1.4s infinite}
+.loading-dot:nth-child(2){animation-delay:.2s}
+.loading-dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+/* === SEARCH === */
+.search-wrap{
+  position:relative;z-index:1;
+  max-width:400px;margin:0 auto;padding:0 40px;
+  opacity:0;animation:fadeUp .8s .9s forwards;
+}
+.search-input{
+  width:100%;padding:12px 20px 12px 44px;
+  background:var(--surface);border:1px solid #2a2a3a;
+  border-radius:100px;color:var(--text);
+  font-family:var(--font-body);font-size:14px;
+  outline:none;transition:border-color .3s;
+}
+.search-input::placeholder{color:var(--text-dim);font-weight:300}
+.search-input:focus{border-color:var(--accent)}
+.search-icon{
+  position:absolute;left:56px;top:50%;transform:translateY(-50%);
+  color:var(--text-dim);pointer-events:none;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* === RESPONSIVE === */
+@media(max-width:768px){
+  header{padding:60px 24px 32px}
+  .grid{grid-template-columns:1fr;padding:16px 20px 60px;gap:16px}
+  .filter-bar{padding:16px 20px 8px}
+  .search-wrap{padding:0 20px}
+  .search-icon{left:36px}
+}
+
+/* === CARD HIDDEN BY FILTER === */
+.card.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<header>
+  <div class="header-label">Knowledge Nomad ✦ 知識遊牧</div>
+  <h1>知識剪貼簿</h1>
+  <p class="subtitle">彭其捷的互動知識作品集</p>
+  <div class="divider"></div>
+</header>
+
+<div class="search-wrap">
+  <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+  <input class="search-input" type="text" placeholder="搜尋作品..." id="searchInput">
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+<div class="counter" id="counter"></div>
+
+<div class="grid" id="grid">
+  <div class="loading">
+    載入中<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+  </div>
+</div>
+
+<footer>
+  <p>© 2024-2026 <a href="https://knowmad.tw" target="_blank">knowmad.tw</a> — 彭其捷</p>
+</footer>
+
+<script>
+// ========== Parse sites.md ==========
+async function parseSitesMd() {
+  try {
+    const res = await fetch('sites.md');
+    if (!res.ok) throw new Error('Failed to load sites.md');
+    const text = await res.text();
+    return parseMd(text);
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+function parseMd(text) {
+  const sites = [];
+  const blocks = text.split(/^## /m).filter(b => b.trim());
+  for (const block of blocks) {
+    const lines = block.trim().split('\n');
+    const title = lines[0].trim();
+    const get = key => {
+      const line = lines.find(l => l.match(new RegExp(`^\\s*-\\s*${key}\\s*[:：]`)));
+      return line ? line.replace(new RegExp(`^\\s*-\\s*${key}\\s*[:：]\\s*`), '').trim() : '';
+    };
+    sites.push({
+      title,
+      url: get('url'),
+      image: get('image'),
+      tag: get('tag'),
+      desc: get('desc')
+    });
+  }
+  return sites;
+}
+
+// ========== Render ==========
+function renderCards(sites) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  if (sites.length === 0) {
+    grid.innerHTML = '<div class="loading">尚無作品，請編輯 sites.md 新增</div>';
+    return;
+  }
+
+  sites.forEach((site, i) => {
+    const card = document.createElement('a');
+    card.className = 'card';
+    card.href = site.url;
+    card.dataset.tag = site.tag;
+    card.dataset.title = site.title;
+    card.dataset.desc = site.desc;
+
+    const imgHtml = site.image
+      ? `<img src="images/${site.image}" alt="${site.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=placeholder>✦</div>'">`
+      : `<div class="placeholder">✦</div>`;
+
+    card.innerHTML = `
+      <div class="card-img-wrap">${imgHtml}</div>
+      <div class="card-body">
+        ${site.tag ? `<span class="card-tag">${site.tag}</span>` : ''}
+        <div class="card-title">${site.title}</div>
+        ${site.desc ? `<p class="card-desc">${site.desc}</p>` : ''}
+        <div class="card-arrow">
+          ENTER <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+    `;
+
+    // stagger animation
+    setTimeout(() => card.classList.add('visible'), 100 + i * 80);
+
+    grid.appendChild(card);
+  });
+}
+
+// ========== Filters ==========
+function renderFilters(sites) {
+  const tags = ['全部', ...new Set(sites.map(s => s.tag).filter(Boolean))];
+  const bar = document.getElementById('filterBar');
+  bar.innerHTML = '';
+  tags.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (tag === '全部' ? ' active' : '');
+    btn.textContent = tag;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    });
+    bar.appendChild(btn);
+  });
+}
+
+function applyFilters() {
+  const activeTag = document.querySelector('.filter-btn.active')?.textContent || '全部';
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('.card');
+  let count = 0;
+
+  cards.forEach(card => {
+    const matchTag = activeTag === '全部' || card.dataset.tag === activeTag;
+    const matchSearch = !query ||
+      card.dataset.title.toLowerCase().includes(query) ||
+      (card.dataset.desc || '').toLowerCase().includes(query) ||
+      (card.dataset.tag || '').toLowerCase().includes(query);
+
+    if (matchTag && matchSearch) {
+      card.classList.remove('hidden');
+      count++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  document.getElementById('counter').textContent = `顯示 ${count} 項作品`;
+}
+
+function updateCounter(sites) {
+  document.getElementById('counter').textContent = `共 ${sites.length} 項作品`;
+}
+
+// ========== Init ==========
+(async () => {
+  const sites = await parseSitesMd();
+  renderCards(sites);
+  renderFilters(sites);
+  updateCounter(sites);
+
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+})();
+</script>
+</body>
+</html>
