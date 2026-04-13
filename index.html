@@ -123,6 +123,13 @@ footer .version:hover{opacity:1;border-bottom-color:var(--accent)}
 .search-icon{position:absolute;left:56px;top:50%;transform:translateY(-50%);color:var(--text-dim);pointer-events:none}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:768px){header{padding:60px 24px 32px}.grid{grid-template-columns:1fr;padding:16px 20px 60px;gap:16px}.filter-bar{padding:16px 20px 8px}.search-wrap{padding:0 20px}.search-icon{left:36px}}
+/* Zoom Control */
+.zoom-bar{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 40px;opacity:0;animation:fadeUp .8s 1.1s forwards}
+.zoom-bar label{font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-dim)}
+.zoom-bar input[type=range]{-webkit-appearance:none;appearance:none;width:120px;height:4px;border-radius:2px;background:#2a2a3a;outline:none;cursor:pointer}
+.zoom-bar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;transition:transform .2s}
+.zoom-bar input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3)}
+.zoom-bar .zoom-val{font-family:var(--font-mono);font-size:11px;color:var(--accent);min-width:32px;text-align:center}
 .card.hidden{display:none}
 .card.card-wide{grid-column:span 2}
 @media(max-width:768px){.card.card-wide{grid-column:span 1}}
@@ -211,13 +218,21 @@ footer .version:hover{opacity:1;border-bottom-color:var(--accent)}
 <div class="filter-bar" id="filterBar"></div>
 <div class="counter" id="counter"></div>
 
+<div class="zoom-bar">
+  <label>縮放</label>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-dim)"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  <input type="range" id="zoomSlider" min="200" max="600" value="340" step="20">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-dim)"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+  <span class="zoom-val" id="zoomVal">340</span>
+</div>
+
 <div class="grid" id="grid">
   <div class="loading">載入中<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></div>
 </div>
 
 <footer>
   <p>© 2024-2026 彭其捷｜<a href="https://knowmad.tw" target="_blank">knowmad.tw</a></p>
-  <span class="version" id="versionBtn">v2.1.0 — AI & Layout</span>
+  <span class="version" id="versionBtn">v2.2.0 — Zoom & GitHub Pages</span>
 </footer>
 
 <!-- VERSION MODAL -->
@@ -226,6 +241,15 @@ footer .version:hover{opacity:1;border-bottom-color:var(--accent)}
     <button class="ver-close" id="verClose">&times;</button>
     <h2>版本紀錄</h2>
     <p class="ver-sub">知識剪貼簿 — Changelog</p>
+
+    <div class="ver-entry">
+      <div class="ver-tag">v2.2.0</div>
+      <div class="ver-date">2026-04-13</div>
+      <ul>
+        <li>新增卡片縮放滑桿，可即時調整 Grid 卡片大小</li>
+        <li>改用 GitHub Pages 部署，前端檔案移至 repo 根目錄</li>
+      </ul>
+    </div>
 
     <div class="ver-entry">
       <div class="ver-tag">v2.1.0</div>
@@ -382,6 +406,16 @@ renderCards(cards);
 renderFilters(cards);
 document.getElementById('counter').textContent = `共 ${cards.length} 項作品`;
 document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+// ========== Zoom Slider ==========
+const zoomSlider = document.getElementById('zoomSlider');
+const zoomVal = document.getElementById('zoomVal');
+const grid = document.getElementById('grid');
+zoomSlider.addEventListener('input', () => {
+  const v = zoomSlider.value;
+  zoomVal.textContent = v;
+  grid.style.gridTemplateColumns = `repeat(auto-fill, minmax(${v}px, 1fr))`;
+});
 
 // ========== Version Modal ==========
 const verOverlay = document.getElementById('verOverlay');
