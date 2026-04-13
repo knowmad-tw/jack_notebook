@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>載入中... — 知識剪貼簿</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e8e6e0;font-family:'Noto Sans TC',sans-serif;min-height:100vh}
+.loading-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:14px;color:#8a8a9a;letter-spacing:2px}
+.error-screen{display:none;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:40px}
+.error-screen h2{font-size:20px;margin-bottom:12px}
+.error-screen p{color:#8a8a9a;margin-bottom:24px}
+.error-screen a{color:#e8c547;text-decoration:none}
+iframe{border:none;width:100%;height:100vh;display:none}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">載入作品中...</div>
+<div class="error-screen" id="errorScreen">
+  <div>
+    <h2>找不到此作品</h2>
+    <p>該作品可能已被移除或連結有誤</p>
+    <a href="/">← 回到首頁</a>
+  </div>
+</div>
+<iframe id="contentFrame"></iframe>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+// >>>>>> 請將下方替換為你的 Firebase 設定 <<<<<<
+const firebaseConfig = {
+  apiKey: "AIzaSyAgi3yrbUYdN6HFQj-oymAmsf6QcpenSxU",
+  authDomain: "jack-notebook.firebaseapp.com",
+  projectId: "jack-notebook",
+  storageBucket: "jack-notebook.firebasestorage.app",
+  messagingSenderId: "750820076203",
+  appId: "1:750820076203:web:ddc2755f1eef68f8c065ee",
+  measurementId: "G-Q7VXKJNXQZ"
+};
+// >>>>>> 設定結束 <<<<<<
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const params = new URLSearchParams(window.location.search);
+const cardId = params.get('id');
+
+if (!cardId) {
+  showError();
+} else {
+  try {
+    const snap = await getDoc(doc(db, 'cards', cardId));
+    if (!snap.exists()) { showError(); }
+    else {
+      const card = snap.data();
+      document.title = `${card.title} — 知識剪貼簿`;
+
+      if (card.htmlUrl) {
+        // Load HTML from Firebase Storage into iframe
+        const frame = document.getElementById('contentFrame');
+        frame.src = card.htmlUrl;
+        frame.style.display = 'block';
+        document.getElementById('loadingScreen').style.display = 'none';
+      } else {
+        showError();
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    showError();
+  }
+}
+
+function showError() {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('errorScreen').style.display = 'flex';
+}
+</script>
+</body>
+</html>
