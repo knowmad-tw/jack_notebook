@@ -144,9 +144,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <h1>知識剪貼簿</h1>
-    <p>Jack's Birthday</p>
+    <p>管理後台登入</p>
     <div class="login-error" id="loginError"></div>
-    <input type="password" id="loginPassword" placeholder="yyyymmdd" autocomplete="off" inputmode="numeric" maxlength="8">
+    <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+    <input type="password" id="loginPassword" placeholder="密碼" autocomplete="current-password">
     <button class="btn btn-primary" style="width:100%" id="loginBtn">登入</button>
   </div>
 </div>
@@ -365,22 +366,15 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-const ADMIN_EMAIL = 'knowledge.nomads.tw2@gmail.com';
-const ADMIN_BIRTHDAY = '19850109';
-
 document.getElementById('loginBtn').addEventListener('click', doLogin);
 document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 async function doLogin() {
-  const pw = document.getElementById('loginPassword').value.trim();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
-  if (pw !== ADMIN_BIRTHDAY) {
-    errEl.textContent = '答錯了';
-    errEl.style.display = 'block';
-    return;
-  }
   try {
-    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, pw);
+    await signInWithEmailAndPassword(auth, email, pw);
     errEl.style.display = 'none';
   } catch (e) {
     errEl.textContent = e.code === 'auth/invalid-credential' ? '帳號或密碼錯誤' : e.message;
